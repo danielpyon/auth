@@ -12,7 +12,7 @@ def hash_password(s):
 	'''Hash a password string with salt
 	'''
 
-	return hashlib.sha1(str(SALT + password).encode('utf-8')).hexdigest()
+	return hashlib.sha1(str(SALT + s).encode('utf-8')).hexdigest()
 
 def logged():
 	'''Is the user logged in?

@@ -1,6 +1,5 @@
 import web
 import hashlib
-from decouple import config
 
 web.config.debug = False
 
@@ -11,17 +10,14 @@ urls = (
 	'/signup', 'Signup',
 )
 
-# Database configuration
-DB_USER = config('DBUSER')
-DB_PASS = config('DBPASS')
-db = web.database(dbn='mysql', db='db', user=DB_USER, pw=DB_PASS)
+from db import db
 
 app = web.application(urls, globals())
 
 # Session configuration
 if web.config.get('_session') is None:
 	store = web.session.DiskStore('sessions')
-	session = web.session.Session(app, store, initializer={'login': 0, 'privilege': 0})
+	session = web.session.Session(app, store, initializer={'login': 0, 'privilege': 0, 'id': ''})
 	web.config._session = session
 else:
 	session = web.config._session

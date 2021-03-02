@@ -2,7 +2,9 @@
 This is the module for signing up new users in the database.
 '''
 
+import web
 from auth import logged, hash_password, create_render, session, login_required
+from db import db
 
 class Signup:
 	def GET(self):
@@ -22,11 +24,16 @@ class Signup:
 			'pass': hashed,
 			'email': email
 		}
-		db.insert('users', **args)
+		try:
+			db.insert('users', **args)
 
-		identity = db.select('users', where='user=$username', vars=locals())[0]
-		session.login = 1
-		session.privilege = identity['privilege']
+			identity = db.select('users', where='user=$username', vars=locals())[0]
+			session.login = 1
+			session.privilege = identity['privilege']
 		
-		render = create_render(session.privilege)
-		return render.login_ok()
+			render = create_render(session.privilege)
+			return render.login_ok()
+		except:
+			session.logged = 0
+			session.privilege = 0
+			return create_render(session.privilege).signup_error()
